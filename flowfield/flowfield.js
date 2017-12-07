@@ -31,42 +31,46 @@ function setup() {
     this.bgc = 200;
     background(bgc);
 
+    //html elements
+    this.parentDiv = createDiv('Controls');
+    parentDiv.position(width + 10, 10);
     this.fr = createP();
-    fr.position(width + 10, 0);
+    parentDiv.child(fr);
     this.isTimeDepCheck = createCheckbox('Time-dependent field', true);
-    isTimeDepCheck.position(width + 10, 40);
+    parentDiv.child(isTimeDepCheck);
     isTimeDepCheck.changed(()=>{
         isTimeDep = !isTimeDep;
     });
     isShowingVectorsCheck = createCheckbox('Show vector field', false);
-    isShowingVectorsCheck.position(width + 10, 70);
+    parentDiv.child(isShowingVectorsCheck);
     isShowingVectorsCheck.changed(()=>{
         isShowingVectors = !isShowingVectors;
         background(bgc);
     });
-    this.magSliderP = createP('Set magnitude of vectors:');
-    magSliderP.position(width + 10, 90);
+    this.magSliderP = createP('Vector Magnitude:');
+    parentDiv.child(magSliderP);
     this.magnitudeSlider = createSlider(0.01, 10, 1);
-    magnitudeSlider.position(width + 10, 130);
-    this.velSliderP = createP('Set max velocity of particles:');
-    velSliderP.position(width + 10, 150);
+    parentDiv.child(magnitudeSlider);
+    this.velSliderP = createP('Particle Velocity:');
+    parentDiv.child(velSliderP);
     this.velocitySlider = createSlider(1, 10, 2);
-    velocitySlider.position(width + 10, 190);
-    this.partNumSliderP = createP('Change the number of particles:');
-    partNumSliderP.position(width + 10, 210);
+    parentDiv.child(velocitySlider);
+    this.partNumSliderP = createP('Particle Number:');
+    parentDiv.child(partNumSliderP);
     this.particleNumberSlider = createSlider(500, 10000, 2000);
-    particleNumberSlider.position(width + 10, 250);
+    parentDiv.child(particleNumberSlider);
     this.setPartNumBtn = createButton('Set');
-    setPartNumBtn.position(width + 150, 250);
+    parentDiv.child(setPartNumBtn);
     setPartNumBtn.mousePressed(setParticleNumber);
     isPsychedeliaCheck = createCheckbox('Psychedelia!', false);
-    isPsychedeliaCheck.position(width + 10, 290);
+    parentDiv.child(isPsychedeliaCheck);
     isPsychedeliaCheck.changed(()=>{
         isPsychedelia = !isPsychedelia;
     });
     this.clearBtn = createButton('Clear');
-    clearBtn.position(width + 10, 310);
+    parentDiv.child(clearBtn);
     clearBtn.mousePressed(clearScreen);
+    //html elements end
 }
 
 function draw() {
@@ -76,7 +80,7 @@ function draw() {
     fr.html('FPS: ' + floor(frameRate()));
     vectorMagnitude = magnitudeSlider.value();
     maxVelocity = velocitySlider.value();
-    partNumSliderP.html('Change the number of particles: ' + particleNumberSlider.value());
+    partNumSliderP.html('Particle Number: ' + particleNumberSlider.value());
     //console.log(frameRate());
     if(isTimeDep){
         zoff += 0.01;
