@@ -1,5 +1,5 @@
 function setup() {
-    createCanvas(800, 800);
+    createCanvas(1366, 768);
 
     gridX = width;
     gridY = height;
@@ -16,13 +16,20 @@ function setup() {
     this.isTimeDep = true;
     this.zoff = 0.0;
 
-    this.vectorMagnitude = 0.01;
+    this.vectorMagnitude = 1;
     this.maxVelocity = 2;
     this.flowfield = [];
     this.particles = [];
     for(let i = 0; i < 2000; i++){
         particles[i] = new Particle();
     }   
+
+    this.hue = 0;
+    this.satur = 0;
+    this.c;
+    this.isPsychedelia = false;
+    this.bgc = 200;
+    background(bgc);
 
     this.fr = createP();
     fr.position(width + 10, 0);
@@ -35,11 +42,11 @@ function setup() {
     isShowingVectorsCheck.position(width + 10, 70);
     isShowingVectorsCheck.changed(()=>{
         isShowingVectors = !isShowingVectors;
-        background(255);
+        background(bgc);
     });
     this.magSliderP = createP('Set magnitude of vectors:');
     magSliderP.position(width + 10, 90);
-    this.magnitudeSlider = createSlider(0.01, 10, 0.01);
+    this.magnitudeSlider = createSlider(0.01, 10, 1);
     magnitudeSlider.position(width + 10, 130);
     this.velSliderP = createP('Set max velocity of particles:');
     velSliderP.position(width + 10, 150);
@@ -52,12 +59,20 @@ function setup() {
     this.setPartNumBtn = createButton('Set');
     setPartNumBtn.position(width + 150, 250);
     setPartNumBtn.mousePressed(setParticleNumber);
+    isPsychedeliaCheck = createCheckbox('Psychedelia!', false);
+    isPsychedeliaCheck.position(width + 10, 290);
+    isPsychedeliaCheck.changed(()=>{
+        isPsychedelia = !isPsychedelia;
+    });
+    this.clearBtn = createButton('Clear');
+    clearBtn.position(width + 10, 310);
+    clearBtn.mousePressed(clearScreen);
 }
 
 function draw() {
 
     scale(zoom);
-    if(isShowingVectors) {background(255);}
+    if(isShowingVectors) {background(bgc);}
     fr.html('FPS: ' + floor(frameRate()));
     vectorMagnitude = magnitudeSlider.value();
     maxVelocity = velocitySlider.value();
@@ -67,6 +82,7 @@ function draw() {
         zoff += 0.01;
     }
     let yoff = 0;
+    stroke(0, 100);
     for(let i = 0; i < rows; i++) {
         let xoff = 0;
         for(let j = 0; j < cols; j++) {
@@ -80,7 +96,7 @@ function draw() {
             flowfield[index] = v;
 
             if(isShowingVectors) {
-                stroke(0, 100);
+                //stroke(0, 100);
                 push();
                 translate(j * scl, i * scl);
                 rotate(v.heading());
@@ -92,15 +108,30 @@ function draw() {
         yoff += coarse;
     }
 
-    for(let i = 0; i < particles.length; i++) {
-        particles[i].show();
+    if(isPsychedelia) {
+        let c = color('hsla('+hue++%360+',100%,50%,255)');
+        stroke(c);
+    } else {
+        stroke(0, 100);
+    }      
+    // strokeWeight(1) ;
+    // if(isShowingVectors) {
+    //     strokeWeight(2);
+    // }
+    for(let i = 0; i < particles.length; i++) {    
         particles[i].update();
-        particles[i].follow(flowfield);
+        particles[i].show();
+        particles[i].follow(flowfield);  
     }  
+    
+}
+
+function clearScreen() {
+    background(bgc);
 }
 
 function setParticleNumber() {
-    background(255);
+    background(bgc);
     particles = [];
     for(let i = 0; i < particleNumberSlider.value(); i++){
         particles[i] = new Particle();
@@ -111,15 +142,25 @@ function Particle() {
     this.pos = createVector(random(width), random(height));
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
+    this.prevPos = createVector(0, 0);//this.pos;
+    //this.prevPos.x= this.pos.x;
+    //this.prevPos.y = this.pos.y;
 
     this.update = function() {
         this.vel.add(this.acc);
         this.vel.limit(maxVelocity);
+        this.prevPos.x = this.pos.x;
+        this.prevPos.y = this.pos.y;
+        //console.log(this.prevPos);
         this.pos.add(this.vel);
         this.acc.mult(0);
 
         this.pos.x = (this.pos.x + width) % width;
         this.pos.y = (this.pos.y + height) % height;
+        if(abs(this.pos.x-this.prevPos.x) > width/2 || abs(this.pos.y-this.prevPos.y) > height/2) {
+            this.prevPos.x = this.pos.x;
+            this.prevPos.y = this.pos.y;
+        }
     }
 
     this.applyForce = function(force) {
@@ -135,13 +176,17 @@ function Particle() {
     }
 
     this.show = function() {
-        if(isShowingVectors) {
-            stroke(0);
-        } else {
-            stroke(0, 20);
-        }
+        // if(isShowingVectors) {
+        //     stroke(0);
+        // } else {
+        //     stroke(0, 20);
+        // }
 
-        strokeWeight(2);
-        point(this.pos.x, this.pos.y);
+        // strokeWeight(2);
+        //push();
+        //translate(this.pos.x, this.pos.y);
+        line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
+        //point(this.pos.x, this.pos.y);
+        //pop();
     }
 }
