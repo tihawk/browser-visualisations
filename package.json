@@ -1,0 +1,24 @@
+{
+  "name": "browser-visualisations",
+  "version": "1.0.0",
+  "description": "Some browser visualisations of physics / math and various simulations, using p5.js",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Kiril P. Blagoev",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tihawk/browser-visualisations.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tihawk/browser-visualisations/issues"
+  },
+  "homepage": "https://github.com/tihawk/browser-visualisations#readme"
+}
