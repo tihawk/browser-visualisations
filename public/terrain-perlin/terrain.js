@@ -1,5 +1,6 @@
 function setup() {
     createCanvas(1366, 768, WEBGL);
+    colorMode(HSB);
 
     gridX = width;
     gridY = height;
@@ -70,11 +71,11 @@ function draw() {
     // noFill();
     // stroke(255);
     // fill(155);
-    background(51);
+    background(270, 100, 50);
     for(let y = 0; y < rows - 1; y++) {
         noStroke();
         for(let x = 0; x < cols - 1; x++) {
-            fill(map(terrain[y][x], -scl*6, scl*6, 0, 255));
+            fill(map(terrain[y][x], -scl*6, scl*6, 240, 0), map(terrain[y][x], -scl*6, scl*6, 100, 100), map(terrain[y][x], -scl*6, scl*6, 50, 100));
             beginShape(TRIANGLES);
             vertex(x*scl, y*scl, terrain[y][x]);
             vertex(x*scl, (y+1)*scl, terrain[y+1][x]);
