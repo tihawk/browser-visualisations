@@ -1,8 +1,8 @@
 function setup() {
-    createCanvas(1366, 768);
+    this.c = createCanvas(windowWidth || 1366, windowHeight || 768);
 
-    gridX = width;
-    gridY = height;
+    this.gridX = width;
+    this.gridY = height;
     
     this.scl = 40;
     this.zoom = 1;
@@ -33,15 +33,18 @@ function setup() {
 
     //html elements
     this.parentDiv = createDiv('Controls');
-    parentDiv.position(width + 10, 10);
+    parentDiv.style('background-color', 'rgba(150, 150, 150, 0.6)');
+    parentDiv.style('color', 'white');
+    parentDiv.style('display', 'none');
+    parentDiv.position(0, 20);
     this.fr = createP();
     parentDiv.child(fr);
-    this.isTimeDepCheck = createCheckbox('Time-dependent field', true);
+    this.isTimeDepCheck = createCheckbox('Time-dependent field', isTimeDep);
     parentDiv.child(isTimeDepCheck);
     isTimeDepCheck.changed(()=>{
         isTimeDep = !isTimeDep;
     });
-    isShowingVectorsCheck = createCheckbox('Show vector field', false);
+    isShowingVectorsCheck = createCheckbox('Show vector field', isShowingVectors);
     parentDiv.child(isShowingVectorsCheck);
     isShowingVectorsCheck.changed(()=>{
         isShowingVectors = !isShowingVectors;
@@ -49,7 +52,7 @@ function setup() {
     });
     this.magSliderP = createP('Vector Magnitude:');
     parentDiv.child(magSliderP);
-    this.magnitudeSlider = createSlider(0.01, 10, 1);
+    this.magnitudeSlider = createSlider(0.01, 10, vectorMagnitude);
     parentDiv.child(magnitudeSlider);
     this.velSliderP = createP('Particle Velocity:');
     parentDiv.child(velSliderP);
@@ -62,7 +65,7 @@ function setup() {
     this.setPartNumBtn = createButton('Set');
     parentDiv.child(setPartNumBtn);
     setPartNumBtn.mousePressed(setParticleNumber);
-    isPsychedeliaCheck = createCheckbox('Psychedelia!', false);
+    isPsychedeliaCheck = createCheckbox('Psychedelia!', isPsychedelia);
     parentDiv.child(isPsychedeliaCheck);
     isPsychedeliaCheck.changed(()=>{
         isPsychedelia = !isPsychedelia;
@@ -70,12 +73,24 @@ function setup() {
     this.clearBtn = createButton('Clear');
     parentDiv.child(clearBtn);
     clearBtn.mousePressed(clearScreen);
+  
+    this.isShowControls = false;
+    this.optionsBtn = createButton('Show Options');
+    optionsBtn.position(0, 0);
+    optionsBtn.mouseClicked(()=>{
+      if(isShowControls) {
+        parentDiv.style('display', 'none');
+      } else {
+        parentDiv.style('display', 'block');
+      }
+      isShowControls = !isShowControls;
+    });
     //html elements end
 }
 
 function draw() {
 
-    scale(zoom);
+    //scale(zoom);
     if(isShowingVectors) {background(bgc);}
     fr.html('FPS: ' + floor(frameRate()));
     vectorMagnitude = magnitudeSlider.value();
@@ -142,6 +157,14 @@ function setParticleNumber() {
     }
 }
 
+function windowResized() {
+  c.resize(windowWidth, windowHeight);
+  parentDiv.position(0, 20);
+  background(bgc);
+  rows = floor(windowHeight/scl);
+  cols = floor(windowWidth/scl);
+}
+
 function Particle() {
     this.pos = createVector(random(width), random(height));
     this.vel = createVector(0, 0);
@@ -180,13 +203,6 @@ function Particle() {
     }
 
     this.show = function() {
-        // if(isShowingVectors) {
-        //     stroke(0);
-        // } else {
-        //     stroke(0, 20);
-        // }
-
-        // strokeWeight(2);
         //push();
         //translate(this.pos.x, this.pos.y);
         line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
