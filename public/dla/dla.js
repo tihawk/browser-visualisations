@@ -14,6 +14,9 @@ var crystalSize;
 
 var showWalkers = true;
 
+var arrangement = 'center';
+var newArr = 'center';
+
 function preload() {
 var isShowOptions = false;
 //controls
@@ -67,6 +70,14 @@ showWalkersCheck.changed(()=>{
     }
 });
 
+const arrSelP = createP('Crystal arrangements*:');
+optionsDiv.child(arrSelP);
+const arrSel = createSelect();
+optionsDiv.child(arrSel);
+arrSel.option('center');
+arrSel.option('frame');
+
+
 const requiresResetP = createP('* - requires reset');
 optionsDiv.child(requiresResetP);
 
@@ -74,6 +85,7 @@ const resetBtn = createButton('Reset');
 optionsDiv.child(resetBtn);
 resetBtn.mousePressed(()=>{
     walkersNum = walkersNumSlider.value();
+    arrangement = arrSel.value();
     walkers = [];
     crystal = [];
     bins = [];
@@ -99,9 +111,28 @@ function setup() {
     //console.log(bins);
 
     //generate attractor
-    crystal.push(new Walker(width/2, height/2, true));
-    bins[crystal[0].getBin()].push(crystal[0]);
-    crystal[0].show();
+    switch (arrangement) {
+        case 'center':
+            crystal.push(new Walker(width/2, height/2, true));
+            bins[crystal[0].getBin()].push(crystal[0]);
+            crystal[0].show();
+            break;
+        case 'frame':
+            for(let i = 0; i < 2*rows + 2*cols; i++){
+                crystal.push(new Walker(scl, i*scl, true));
+                crystal.push(new Walker(cols*scl - scl, i*scl, true));
+                crystal.push(new Walker(i*scl, cols, true));
+                crystal.push(new Walker(i*scl, rows*scl - cols, true));
+                bins[crystal[i].getBin()].push(crystal[i]);
+                bins[crystal[i+1].getBin()].push(crystal[i+1]);
+                bins[crystal[i+2].getBin()].push(crystal[i+2]);
+                bins[crystal[i+3].getBin()].push(crystal[i+3]);
+            }
+            break;
+    }
+    
+
+    
 
     //generate walkers
     for(let i = 0; i < walkersNum; i++) {
