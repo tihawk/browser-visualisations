@@ -12,6 +12,12 @@
 
 [screenshot_flowfield]: https://raw.githubusercontent.com/tihawk/browser-visualisations/master/public/flowfield/screenshot.png "Flowfield Screenshot"
 
+### [Diffusion-limited Aggregation - Crystal Growth](https://codepen.io/tihawk/full/EbqQvp/)
+
+![DLA Screenshot][screenshot_dla]
+
+[screenshot_dla]: https://raw.githubusercontent.com/tihawk/browser-visualisations/master/public/dla/screenshot.png "DLA Screenshot"
+
 ### [Menger Sponge](https://codepen.io/tihawk/full/bYyQBx/)
 
 ![Menger Sponge Screenshot][screenshot_menger]
