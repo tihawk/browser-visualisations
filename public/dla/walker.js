@@ -23,41 +23,31 @@ function Walker(x, y, stuck) {
         for(let i = 0; i < bins[bin+1].length; i++) {
             let distSq = this.getDistSq(this, bins[bin+1][i]);
             if(distSq < r*r && random() < stickiness) {
-                //if(random() < stickiness) {
-                    this.stuck = true;
-                //}  
+                this.stuck = true;
             }
         }
         for(let i = bins[bin].length-1; i >= 0; i--) {
             let distSq = this.getDistSq(this, bins[bin][i]);
             if(distSq < r*r && random() < stickiness) {
-                //if(random() < stickiness) {
-                    this.stuck = true;
-                //}  
+                this.stuck = true;
             }
         }
         for(let i = 0; i < bins[bin-1].length; i++) {
             let distSq = this.getDistSq(this, bins[bin-1][i]);
             if(distSq < r*r && random() < stickiness) {
-                //if(random() < stickiness) {
-                    this.stuck = true;
-                //}  
+                this.stuck = true;
             }
         }
         for(let i = 0; i < bins[bin+cols].length; i++) {
             let distSq = this.getDistSq(this, bins[bin+cols][i]);
             if(distSq < r*r && random() < stickiness) {
-                //if(random() < stickiness) {
-                    this.stuck = true;
-                //}  
+                this.stuck = true;
             }
         }
         for(let i = 0; i < bins[bin-cols].length; i++) {
             let distSq = this.getDistSq(this, bins[bin-cols][i]);
             if(distSq < r*r && random() < stickiness) {
-                //if(random() < stickiness) {
-                    this.stuck = true;
-                //}  
+                this.stuck = true;
             }
         }
 
@@ -83,19 +73,6 @@ function Walker(x, y, stuck) {
                         this.show();
                     }
                     break;
-            }
-            // if(this.getDistSq(this, crystal[0]) < crystalSize*crystalSize) {
-                // walkers[walkers.indexOf(this)] = new Walker();
-            // } else {
-                // walkers.splice(walkers.indexOf(this), 1);
-            // } 
-            if(bins[bins.length/2][0] === undefined) {
-                walkers[walkers.indexOf(this)] = new Walker();
-            } else {
-                walkers.splice(walkers.indexOf(this), 1);
-            } 
-            if(!showWalkers) {
-                this.show();
             }
         }
     }
