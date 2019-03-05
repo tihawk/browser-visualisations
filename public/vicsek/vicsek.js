@@ -2,17 +2,22 @@ function setup() {
 
 	this.c = createCanvas(windowWidth || 1366, windowHeight || 768, WEBGL);
 
+	this.yPressed = 0;
+	this.xPressed = 0;
+
     this.yAngle = 0;
     this.xAngle = 0;
 	this.zoom = 1;
 
-	this.N = 128;
-	this.L = createVector(700., 700., 700.);
+	this.N = 256;
+	this.L = createVector(1500., 1500., 1500.);
 	this.timeDelay = 0;
 	this.eta = 45.;
 	this.r = 100.;
 	this.vel = 5.;
 	this.deltaT = 1;
+
+	this.steps = 0;
 
 	this.particles = [];
 	for (var i = 0; i < N; i++) {
@@ -20,11 +25,20 @@ function setup() {
 	}
 
     //html elements
-    this.parentDiv = createDiv('Controls');
+    this.parentDiv = createDiv('');
     parentDiv.style('background-color', 'rgba(150, 150, 150, 0.6)');
     parentDiv.style('color', 'white');
     parentDiv.style('display', 'none');
-    parentDiv.position(0, 20);
+    parentDiv.position(0, 0);
+
+    this.hideOptionsBtn = createButton('Hide Options');
+    parentDiv.child(hideOptionsBtn);
+    hideOptionsBtn.mouseClicked(optionsButtonClicked);
+
+    this.stepCountParent = createP();
+    stepCountParent.style('font-size', '12');
+    parentDiv.child(stepCountParent);
+
     this.fr = createP();
     fr.style('font-size', '12')
     parentDiv.child(fr);
@@ -58,16 +72,19 @@ function setup() {
     restartBtn.mouseClicked(restart);
   
     this.isShowControls = false;
+    this.btnDiv = createDiv('');
+    btnDiv.style('background-color', 'rgba(150, 150, 150, 0.1)');
+    btnDiv.style('color', 'white');
+    btnDiv.style('font-size', '12');
+    this.stepCount = createP();
+    btnDiv.child(stepCount);
+    btnDiv.position(0, 0);
     this.optionsBtn = createButton('Show Options');
-    optionsBtn.position(0, 0);
-    optionsBtn.mouseClicked(()=>{
-      if(isShowControls) {
-        parentDiv.style('display', 'none');
-      } else {
-        parentDiv.style('display', 'block');
-      }
-      isShowControls = !isShowControls;
-    });
+    btnDiv.child(optionsBtn);
+    optionsBtn.mouseClicked(optionsButtonClicked);
+    this.restartBtn = createButton("Restart");
+    btnDiv.child(restartBtn);
+    restartBtn.mouseClicked(restart);
     //html elements end
 
 }
@@ -76,16 +93,17 @@ function draw() {
 	scale(zoom);
 	rotateY(yAngle);
     rotateX(xAngle);
-    //camera(0, 0, height/2., rotateX, rotateY, 0, 0, 1, 0);
-	background(0, 0, 0);
+	background(15,35,83);
 
 	fr.html('FPS: ' + floor(frameRate()));
-
+	stepCount.html('Steps: ' + steps);
+	stepCountParent.html('Steps: ' + steps);
 
 	translate(-L.x/2, -L.y/2, -L.z/2);
 
 	push();
 	noFill();
+	stroke(255);
 	translate(L.x/2, L.y/2, L.z/2);
 	box(L.x, L.y, L.z);
 	pop();
@@ -104,12 +122,24 @@ function draw() {
 
 		particles[i].update(newPos, newDir);
 
-		particles[i].show();
-
+		particles[i].show(neighbours);
 	}
+	steps++;
+}
+
+function optionsButtonClicked() {
+	if(isShowControls) {
+        parentDiv.style('display', 'none');
+        btnDiv.style('display', 'block');
+      } else {
+        parentDiv.style('display', 'block');
+        btnDiv.style('display', 'none');
+      }
+      isShowControls = !isShowControls;
 }
 
 function restart() {
+  c.resize(windowWidth, windowHeight);
 	background(0, 0, 0);
 	N = nInput.value();
 
@@ -121,11 +151,26 @@ function restart() {
 	for (var i = 0; i < N; i++) {
 		particles[i] = new Particle();
 	}
+
+	steps = 0;
+	xAngle = 0;
+	yAngle = 0;
+}
+
+function mousePressed() {
+	yPressed = mouseY;
+	xPressed = mouseX;
 }
 
 function mouseDragged() {
-    yAngle = atan((mouseX-height/2)*0.1);
-    xAngle = atan((mouseY-width/2)*0.1);   
+    yAngleTemp = atan( (mouseX - xPressed)*0.0001 );
+    xAngleTemp = atan( (yPressed - mouseY)*0.0001 );
+
+    yAngle += yAngleTemp;
+    xAngle += xAngleTemp;
+
+    //yAngle = map(yAngle, -HALF_PI, HALF_PI, -PI, PI);
+    //xAngle = map(xAngle, -HALF_PI, HALF_PI, -PI, PI);
 }
 
 function mouseWheel(e) {
@@ -216,12 +261,13 @@ function Particle() {
 			this.pos.z = L.z;
 	}
 
-	this.show = function() {
-		stroke(255, 255, 255);
+	this.show = function(neighbours) {
+		rgb = map(neighbours.length, 0, N*0.1, 0, 255);
+		stroke(255 - rgb, rgb, 0);
 		//scl = (vel + 10)%10;
 		//console.log(scl);
 		push();
-		fill(255);
+		fill(255 - rgb, rgb, 0);
 		translate(this.pos);
 		box(5);
 		pop();

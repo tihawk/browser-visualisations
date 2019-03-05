@@ -23,3 +23,9 @@
 ![Menger Sponge Screenshot][screenshot_menger]
 
 [screenshot_menger]: https://raw.githubusercontent.com/tihawk/browser-visualisations/master/public/menger-sponge/screenshot.png "Menger Sponge Screenshot"
+
+### [Vicsek Model 3D](https://codepen.io/tihawk/full/vPXebG/)
+
+![Vicsek Model Screenshot][screenshot_vicsek]
+
+[screenshot_vicsek]: https://raw.githubusercontent.com/tihawk/browser-visualisations/master/public/vicsek/screenshot.png "Vicsek Model Screenshot"
