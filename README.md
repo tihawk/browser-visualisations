@@ -29,3 +29,9 @@
 ![Vicsek Model Screenshot][screenshot_vicsek]
 
 [screenshot_vicsek]: https://raw.githubusercontent.com/tihawk/browser-visualisations/master/public/vicsek/screenshot.png "Vicsek Model Screenshot"
+
+### [Simple Sampling](https://codepen.io/tihawk/full/XGNyEL/)
+
+![Simple Sampling Screenshot][screenshot_sampling]
+
+[screenshot_sampling]: https://raw.githubusercontent.com/tihawk/browser-visualisations/master/public/simple-sampling/screenshot.png "Simple Sampling Screenshot"
